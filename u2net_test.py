@@ -67,24 +67,21 @@ def save_output(image_name,pred,d_dir, colored=False):
             else:
                 newData.append(item)
         img.putdata(newData)
-        img.save(d_dir+imidx+'_COLORED.png', 'PNG')
+        path = d_dir+imidx+'_COLORED.png'
+        img.save(path, 'PNG')
+        return path
 
-def main(colored=False):
+def main(colored=False, imagepath=''):
 
     # --------- 1. get image path and name ---------
     model_name='u2net'#u2netp
 
-
-    image_dir = './test_data/test_images/'
     prediction_dir = './test_data/' + model_name + '_results/'
     model_dir = './saved_models/'+ model_name + '/' + model_name + '.pth'
 
-    img_name_list = glob.glob(image_dir + '*')
-    print(img_name_list)
-
     # --------- 2. dataloader ---------
     #1. dataloader
-    test_salobj_dataset = SalObjDataset(img_name_list = img_name_list,
+    test_salobj_dataset = SalObjDataset(img_name_list = [imagepath],
                                         lbl_name_list = [],
                                         transform=transforms.Compose([RescaleT(320),
                                                                       ToTensorLab(flag=0)])
@@ -107,10 +104,7 @@ def main(colored=False):
     net.eval()
 
     # --------- 4. inference for each image ---------
-    for i_test, data_test in enumerate(test_salobj_dataloader):
-
-        print("inferencing:",img_name_list[i_test].split("/")[-1])
-
+    for _, data_test in enumerate(test_salobj_dataloader):
         inputs_test = data_test['image']
         inputs_test = inputs_test.type(torch.FloatTensor)
 
@@ -125,10 +119,9 @@ def main(colored=False):
         pred = d1[:,0,:,:]
         pred = normPRED(pred)
 
-        # save results to test_results folder
-        save_output(img_name_list[i_test],pred,prediction_dir, colored=colored)
-
         del d1,d2,d3,d4,d5,d6,d7
+        # save results to test_results folder
+        return save_output(imagepath, pred, prediction_dir, colored=colored)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
