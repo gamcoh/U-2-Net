@@ -7,6 +7,10 @@ logging.basicConfig(level=logging.INFO)
 
 app = Flask(__name__)
 
+@app.route('/')
+def root():
+    return 'hi, what are you doing here?'
+
 @app.route('/postImage/', methods=['POST'])
 def applyU2OnImg():
     filename = request.form['filename']
