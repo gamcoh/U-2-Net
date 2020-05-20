@@ -9,3 +9,4 @@ input_images
 test_data
 model/__pycache__/u2net.cpython-36.pyc
 model/__pycache__/__init__.cpython-36.pyc
+api_results

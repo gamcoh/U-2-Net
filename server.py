@@ -1,7 +1,7 @@
 from flask import Flask, request
 from base64 import b64decode
 import logging
-import u2net_test as u2net
+import u2net_lib as u2net
 
 logging.basicConfig(level=logging.INFO)
 
